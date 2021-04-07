@@ -15,3 +15,8 @@
 
 * Install genmocks if needed: `go get -u github.com/delabroj/genmocks`
 * `make mocks`
+
+# Todo (when time permits):
+
+* Return severe weather warnings
+* Add unit tests to api subpackage
