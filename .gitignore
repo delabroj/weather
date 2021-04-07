@@ -1,0 +1,4 @@
+.env
+mocks/
+vendor/
+weather
