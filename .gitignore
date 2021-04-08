@@ -1,4 +1,2 @@
 .env
-mocks/
-vendor/
 weather
