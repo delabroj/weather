@@ -161,12 +161,12 @@ func (m *SequenceMatcher) chainB() {
 	m.bJunk = map[string]struct{}{}
 	if m.IsJunk != nil {
 		junk := m.bJunk
-		for s, _ := range b2j {
+		for s := range b2j {
 			if m.IsJunk(s) {
 				junk[s] = struct{}{}
 			}
 		}
-		for s, _ := range junk {
+		for s := range junk {
 			delete(b2j, s)
 		}
 	}
@@ -181,7 +181,7 @@ func (m *SequenceMatcher) chainB() {
 				popular[s] = struct{}{}
 			}
 		}
-		for s, _ := range popular {
+		for s := range popular {
 			delete(b2j, s)
 		}
 	}
@@ -416,7 +416,7 @@ func (m *SequenceMatcher) GetGroupedOpCodes(n int) [][]OpCode {
 	}
 	codes := m.GetOpCodes()
 	if len(codes) == 0 {
-		codes = []OpCode{OpCode{'e', 0, 1, 0, 1}}
+		codes = []OpCode{{'e', 0, 1, 0, 1}}
 	}
 	// Fixup leading and trailing groups if they show no changes.
 	if codes[0].Tag == 'e' {
@@ -437,8 +437,10 @@ func (m *SequenceMatcher) GetGroupedOpCodes(n int) [][]OpCode {
 		// End the current group and start a new one whenever
 		// there is a large range with no changes.
 		if c.Tag == 'e' && i2-i1 > nn {
-			group = append(group, OpCode{c.Tag, i1, min(i2, i1+n),
-				j1, min(j2, j1+n)})
+			group = append(group, OpCode{
+				c.Tag, i1, min(i2, i1+n),
+				j1, min(j2, j1+n),
+			})
 			groups = append(groups, group)
 			group = []OpCode{}
 			i1, j1 = max(i1, i2-n), max(j1, j2-n)
@@ -559,8 +561,12 @@ type UnifiedDiff struct {
 func WriteUnifiedDiff(writer io.Writer, diff UnifiedDiff) error {
 	buf := bufio.NewWriter(writer)
 	defer buf.Flush()
-	w := func(format string, args ...interface{}) error {
+	wf := func(format string, args ...interface{}) error {
 		_, err := buf.WriteString(fmt.Sprintf(format, args...))
+		return err
+	}
+	ws := func(s string) error {
+		_, err := buf.WriteString(s)
 		return err
 	}
 
@@ -581,26 +587,28 @@ func WriteUnifiedDiff(writer io.Writer, diff UnifiedDiff) error {
 			if len(diff.ToDate) > 0 {
 				toDate = "\t" + diff.ToDate
 			}
-			err := w("--- %s%s%s", diff.FromFile, fromDate, diff.Eol)
-			if err != nil {
-				return err
-			}
-			err = w("+++ %s%s%s", diff.ToFile, toDate, diff.Eol)
-			if err != nil {
-				return err
+			if diff.FromFile != "" || diff.ToFile != "" {
+				err := wf("--- %s%s%s", diff.FromFile, fromDate, diff.Eol)
+				if err != nil {
+					return err
+				}
+				err = wf("+++ %s%s%s", diff.ToFile, toDate, diff.Eol)
+				if err != nil {
+					return err
+				}
 			}
 		}
 		first, last := g[0], g[len(g)-1]
 		range1 := formatRangeUnified(first.I1, last.I2)
 		range2 := formatRangeUnified(first.J1, last.J2)
-		if err := w("@@ -%s +%s @@%s", range1, range2, diff.Eol); err != nil {
+		if err := wf("@@ -%s +%s @@%s", range1, range2, diff.Eol); err != nil {
 			return err
 		}
 		for _, c := range g {
 			i1, i2, j1, j2 := c.I1, c.I2, c.J1, c.J2
 			if c.Tag == 'e' {
 				for _, line := range diff.A[i1:i2] {
-					if err := w(" " + line); err != nil {
+					if err := ws(" " + line); err != nil {
 						return err
 					}
 				}
@@ -608,14 +616,14 @@ func WriteUnifiedDiff(writer io.Writer, diff UnifiedDiff) error {
 			}
 			if c.Tag == 'r' || c.Tag == 'd' {
 				for _, line := range diff.A[i1:i2] {
-					if err := w("-" + line); err != nil {
+					if err := ws("-" + line); err != nil {
 						return err
 					}
 				}
 			}
 			if c.Tag == 'r' || c.Tag == 'i' {
 				for _, line := range diff.B[j1:j2] {
-					if err := w("+" + line); err != nil {
+					if err := ws("+" + line); err != nil {
 						return err
 					}
 				}
@@ -669,8 +677,14 @@ func WriteContextDiff(writer io.Writer, diff ContextDiff) error {
 	buf := bufio.NewWriter(writer)
 	defer buf.Flush()
 	var diffErr error
-	w := func(format string, args ...interface{}) {
+	wf := func(format string, args ...interface{}) {
 		_, err := buf.WriteString(fmt.Sprintf(format, args...))
+		if diffErr == nil && err != nil {
+			diffErr = err
+		}
+	}
+	ws := func(s string) {
+		_, err := buf.WriteString(s)
 		if diffErr == nil && err != nil {
 			diffErr = err
 		}
@@ -700,15 +714,17 @@ func WriteContextDiff(writer io.Writer, diff ContextDiff) error {
 			if len(diff.ToDate) > 0 {
 				toDate = "\t" + diff.ToDate
 			}
-			w("*** %s%s%s", diff.FromFile, fromDate, diff.Eol)
-			w("--- %s%s%s", diff.ToFile, toDate, diff.Eol)
+			if diff.FromFile != "" || diff.ToFile != "" {
+				wf("*** %s%s%s", diff.FromFile, fromDate, diff.Eol)
+				wf("--- %s%s%s", diff.ToFile, toDate, diff.Eol)
+			}
 		}
 
 		first, last := g[0], g[len(g)-1]
-		w("***************" + diff.Eol)
+		ws("***************" + diff.Eol)
 
 		range1 := formatRangeContext(first.I1, last.I2)
-		w("*** %s ****%s", range1, diff.Eol)
+		wf("*** %s ****%s", range1, diff.Eol)
 		for _, c := range g {
 			if c.Tag == 'r' || c.Tag == 'd' {
 				for _, cc := range g {
@@ -716,7 +732,7 @@ func WriteContextDiff(writer io.Writer, diff ContextDiff) error {
 						continue
 					}
 					for _, line := range diff.A[cc.I1:cc.I2] {
-						w(prefix[cc.Tag] + line)
+						ws(prefix[cc.Tag] + line)
 					}
 				}
 				break
@@ -724,7 +740,7 @@ func WriteContextDiff(writer io.Writer, diff ContextDiff) error {
 		}
 
 		range2 := formatRangeContext(first.J1, last.J2)
-		w("--- %s ----%s", range2, diff.Eol)
+		wf("--- %s ----%s", range2, diff.Eol)
 		for _, c := range g {
 			if c.Tag == 'r' || c.Tag == 'i' {
 				for _, cc := range g {
@@ -732,7 +748,7 @@ func WriteContextDiff(writer io.Writer, diff ContextDiff) error {
 						continue
 					}
 					for _, line := range diff.B[cc.J1:cc.J2] {
-						w(prefix[cc.Tag] + line)
+						ws(prefix[cc.Tag] + line)
 					}
 				}
 				break
