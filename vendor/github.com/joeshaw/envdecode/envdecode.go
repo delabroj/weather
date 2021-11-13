@@ -18,10 +18,8 @@ import (
 
 // ErrInvalidTarget indicates that the target value passed to
 // Decode is invalid.  Target must be a non-nil pointer to a struct.
-var (
-	ErrInvalidTarget        = errors.New("target must be non-nil pointer to struct that has at least one exported field with a valid env tag.")
-	ErrNoTargetFieldsAreSet = errors.New("none of the target fields were set from environment variables")
-)
+var ErrInvalidTarget = errors.New("target must be non-nil pointer to struct that has at least one exported field with a valid env tag.")
+var ErrNoTargetFieldsAreSet = errors.New("none of the target fields were set from environment variables")
 
 // FailureFunc is called when an error is encountered during a MustDecode
 // operation. It prints the error and terminates the process.
@@ -316,11 +314,9 @@ type ConfigInfoSlice []*ConfigInfo
 func (c ConfigInfoSlice) Less(i, j int) bool {
 	return c[i].EnvVar < c[j].EnvVar
 }
-
 func (c ConfigInfoSlice) Len() int {
 	return len(c)
 }
-
 func (c ConfigInfoSlice) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
