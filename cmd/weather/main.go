@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/delabroj/weather"
 	"github.com/delabroj/weather/api"
 	"github.com/delabroj/weather/logic"
+	"github.com/delabroj/weather/models"
 	"github.com/delabroj/weather/openweather"
 )
 
 func main() {
-	cfg, err := weather.NewConfigFromEnv()
+	cfg, err := models.NewConfigFromEnv()
 	if err != nil {
 		log.Fatal(err)
 	}

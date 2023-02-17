@@ -3,16 +3,16 @@
 
 package mocks
 
-import "github.com/delabroj/weather"
+import "github.com/delabroj/weather/models"
 
 type MockOpenWeatherClient struct {
-	WeatherByCoordinatesFunc func(lat float64, lon float64) (weather.BasicWeather, error)
+	WeatherByCoordinatesFunc func(lat float64, lon float64) (models.BasicWeather, error)
 }
 
 func NewMockOpenWeatherClient() *MockOpenWeatherClient {
 	return &MockOpenWeatherClient{}
 }
 
-func (mockOpenWeatherClient *MockOpenWeatherClient) WeatherByCoordinates(lat float64, lon float64) (weather.BasicWeather, error) {
+func (mockOpenWeatherClient *MockOpenWeatherClient) WeatherByCoordinates(lat float64, lon float64) (models.BasicWeather, error) {
 	return mockOpenWeatherClient.WeatherByCoordinatesFunc(lat, lon)
 }

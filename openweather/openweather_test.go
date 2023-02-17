@@ -3,12 +3,12 @@ package openweather
 import (
 	"testing"
 
-	"github.com/delabroj/weather"
+	"github.com/delabroj/weather/models"
 	"github.com/stretchr/testify/require"
 )
 
 func TestWeatherByCoordinates(t *testing.T) {
-	cfg, err := weather.NewConfigFromEnv()
+	cfg, err := models.NewConfigFromEnv()
 	require.NoError(t, err)
 
 	cases := []struct {
@@ -36,7 +36,7 @@ func TestWeatherByCoordinates(t *testing.T) {
 
 			data, err := client.WeatherByCoordinates(tc.lat, tc.lon)
 			require.Equal(t, tc.expErr, err != nil)
-			require.Equal(t, tc.expData, data != weather.BasicWeather{})
+			require.Equal(t, tc.expData, data != models.BasicWeather{})
 		})
 	}
 }

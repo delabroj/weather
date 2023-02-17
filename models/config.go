@@ -1,4 +1,4 @@
-package weather
+package models
 
 import "github.com/joeshaw/envdecode"
 

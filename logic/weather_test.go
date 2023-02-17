@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/delabroj/weather"
 	"github.com/delabroj/weather/mocks"
+	"github.com/delabroj/weather/models"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,7 +13,7 @@ func TestWeather(t *testing.T) {
 	latOK := 12.2
 	lonOK := 21.1
 
-	weatherOK := weather.BasicWeather{
+	weatherOK := models.BasicWeather{
 		Temperature: "cold",
 		Weather:     "Cloud",
 	}
@@ -23,7 +23,7 @@ func TestWeather(t *testing.T) {
 
 		retErr error
 
-		expData weather.BasicWeather
+		expData models.BasicWeather
 		expErr  error
 	}{
 		{
@@ -41,7 +41,7 @@ func TestWeather(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mockOpenWeather := mocks.NewMockOpenWeatherClient()
 
-			mockOpenWeather.WeatherByCoordinatesFunc = func(lat, lon float64) (weather.BasicWeather, error) {
+			mockOpenWeather.WeatherByCoordinatesFunc = func(lat, lon float64) (models.BasicWeather, error) {
 				require.Equal(t, latOK, lat)
 				require.Equal(t, lonOK, lon)
 				return weatherOK, tc.retErr

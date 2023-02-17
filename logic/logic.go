@@ -1,12 +1,12 @@
 package logic
 
-import "github.com/delabroj/weather"
+import "github.com/delabroj/weather/models"
 
 type logic struct {
-	openWeatherClient weather.OpenWeatherClient
+	openWeatherClient models.OpenWeatherClient
 }
 
-func NewLogic(openWeatherClient weather.OpenWeatherClient) logic {
+func NewLogic(openWeatherClient models.OpenWeatherClient) logic {
 	return logic{
 		openWeatherClient: openWeatherClient,
 	}

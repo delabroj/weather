@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/delabroj/weather"
+	"github.com/delabroj/weather/models"
 )
 
-func getWeather(logic weather.Logic) http.HandlerFunc {
+func getWeather(logic models.Logic) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		if req.Method != "GET" {
 			WriteJSONError(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)

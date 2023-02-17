@@ -1,4 +1,4 @@
-package weather
+package models
 
 type BasicWeather struct {
 	Temperature string

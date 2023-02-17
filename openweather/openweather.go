@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/delabroj/weather"
+	"github.com/delabroj/weather/models"
 )
 
 const baseURL = "https://api.openweathermap.org"
@@ -34,7 +34,7 @@ type openWeatherAPIWeather struct {
 	} `json:"main"`
 }
 
-func (c openWeatherClient) WeatherByCoordinates(lat, lon float64) (weather.BasicWeather, error) {
+func (c openWeatherClient) WeatherByCoordinates(lat, lon float64) (models.BasicWeather, error) {
 	values := c.newURLValues()
 	values.Set("lat", fmt.Sprint(lat))
 	values.Set("lon", fmt.Sprint(lon))
@@ -42,15 +42,15 @@ func (c openWeatherClient) WeatherByCoordinates(lat, lon float64) (weather.Basic
 	u := baseURL + "/data/2.5/weather?" + values.Encode()
 	req, err := http.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
-		return weather.BasicWeather{}, err
+		return models.BasicWeather{}, err
 	}
 
 	var response openWeatherAPIWeather
 	if err = c.makeRequest(req, &response); err != nil {
-		return weather.BasicWeather{}, err
+		return models.BasicWeather{}, err
 	}
 
-	ret := weather.BasicWeather{
+	ret := models.BasicWeather{
 		Weather: response.Weather[0].Main,
 	}
 

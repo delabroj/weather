@@ -6,7 +6,7 @@ check:
 
 mocks: ##	generate mocks for unit tests
 	rm -f mocks/*_gen.go
-	genmocks 'mockOpenWeatherClient *MockOpenWeatherClient' weather.OpenWeatherClient mocks > mocks/datastore_mock_gen.go
+	genmocks 'mockOpenWeatherClient *MockOpenWeatherClient' models.OpenWeatherClient mocks > mocks/datastore_mock_gen.go
 	goimports -w mocks/*
 	gofmt -w mocks/*
 

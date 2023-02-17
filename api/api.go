@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/delabroj/weather"
+	"github.com/delabroj/weather/models"
 )
 
 type ServerConfig struct {
-	Config weather.Config
-	Logic  weather.Logic
+	Config models.Config
+	Logic  models.Logic
 }
 
 type Server struct {
