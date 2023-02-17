@@ -1,4 +1,4 @@
-.PHONY: check mocks build
+.PHONY: check mocks build gen
 
 check:
 	@go fmt $$(go list ./... | grep -v /vendor/) && go vet $$(go list ./... | grep -v /vendor/)
@@ -12,3 +12,6 @@ mocks: ##	generate mocks for unit tests
 
 build:
 	@go build -o weather cmd/weather/*
+
+gen:
+	@go generate ./...

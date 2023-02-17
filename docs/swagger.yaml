@@ -1,0 +1,52 @@
+consumes:
+  - application/json
+definitions:
+  APIError:
+    properties:
+      error:
+        type: string
+    type: object
+  BasicWeather:
+    properties:
+      Temperature:
+        type: string
+      Weather:
+        type: string
+    type: object
+info:
+  description: Tells you the weather.
+  title: Example API Server.
+  version: 1.0.0
+paths:
+  /weather:
+    get:
+      description: Get weather by position
+      operationId: GetWeather
+      parameters:
+        - example: "0"
+          format: double
+          in: query
+          name: lat
+          required: true
+          type: number
+        - example: "0"
+          format: double
+          in: query
+          name: lon
+          required: true
+          type: number
+      responses:
+        "200":
+          description: BasicWeather
+          schema:
+            $ref: '#/definitions/BasicWeather'
+        default:
+          description: APIError
+          schema:
+            $ref: '#/definitions/APIError'
+      summary: Get weather
+      tags:
+        - Weather
+produces:
+  - application/json
+swagger: "2.0"

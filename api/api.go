@@ -70,6 +70,7 @@ func (srv *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	)
 }
 
+// swagger:model APIError
 type apiError struct {
 	Error string `json:"error,omitempty"`
 }

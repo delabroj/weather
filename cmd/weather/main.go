@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/delabroj/weather/api"
+	_ "github.com/delabroj/weather/docs" // imported to capture top-level OpenAPI metadata when `swagger generate spec` runs
 	"github.com/delabroj/weather/logic"
 	"github.com/delabroj/weather/models"
 	"github.com/delabroj/weather/openweather"
