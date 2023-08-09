@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/delabroj/weather/models"
+	"github.com/gorilla/mux"
 )
 
 type ServerConfig struct {
@@ -16,13 +17,13 @@ type ServerConfig struct {
 }
 
 type Server struct {
-	Mux *http.ServeMux
+	Mux *mux.Router
 	cfg *ServerConfig
 }
 
 func NewServer(cfg *ServerConfig) *Server {
 	srv := Server{
-		Mux: http.NewServeMux(),
+		Mux: mux.NewRouter(),
 		cfg: cfg,
 	}
 
